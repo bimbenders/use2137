@@ -1,21 +1,52 @@
-import * as React from 'react'
+import { useState, useEffect } from 'react';
 
-export const useMyHook = () => {
-  let [{
-    counter
-  }, setState] = React.useState({
-    counter: 0
-  })
+const use2137 = (callback = () => console.log('To to papiezowa liczba')) => {
+  const [keys, setKeys] = useState([])
 
-  React.useEffect(() => {
-    let interval = window.setInterval(() => {
-      counter++
-      setState({counter})
-    }, 1000)
+  useEffect(() => {
+    window.addEventListener('keydown', downHandler, { passive: true })
     return () => {
-      window.clearInterval(interval)
-    }
+      window.removeEventListener('keydown', downHandler)
+    };
   }, [])
 
-  return counter
+  useEffect(() => {
+    if (keys.join('') === '2137') {
+      callback()
+      setKeys([])
+    }
+  }, [callback, keys])
+
+  const downHandler = e => {
+    let key
+    switch (e.code) {
+      case 'Digit2':
+        key = '2';
+        break
+      case 'Digit1':
+        key = '1';
+        break
+      case 'Digit3':
+        key = '3';
+        break
+      case 'Digit7':
+        key = '7';
+        break
+      default:
+        key = null
+        break;
+    }
+
+    if (key) {
+      setKeys(prevState =>
+        prevState.length >= 4
+          ? prevState.concat(key).slice(1, 5)
+          : prevState.concat(key)
+      )
+    } else {
+      setKeys([])
+    }
+  }
 }
+
+export default use2137
